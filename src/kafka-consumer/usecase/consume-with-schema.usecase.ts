@@ -7,6 +7,7 @@ import { ProducerEvent } from '../../kafka-producer/dto/kafka.dto';
 import { SchemaService } from '../../common/services/schema/schema.service';
 import PublishWithSchemaUseCase from '../../kafka-producer/usecase/publish-with-schema.usecase';
 import { parseHeaders } from '../../common/functions/helperFunction';
+import 'dotenv/config';
 
 @Injectable()
 export default class ConsumeWithSchemaUseCase {
@@ -110,7 +111,7 @@ constructor(private schemaService: SchemaService,
         topic: 'test_topic_002', // Event Topic
         messages: {
             key: message.key?.toString(),
-            headers: { 'avro-schema-id' : '10' }, //Requirement for Publishing with Schema
+            headers: { 'avro-schema-id' : process.env.KAFKA_PRODUCER_EVENT_SCHEMA }, //Requirement for Publishing with Schema
             value: messageValue
         }
     };
