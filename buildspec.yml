@@ -1,0 +1,45 @@
+# Do not change version. This is the version of aws buildspec, not the version of your buldspec file.
+version: 0.2
+
+env:
+  parameter-store:
+    APP_ENV: 'KAFKA_SERVICE_BOILERPLATE_ENV'
+phases:
+  install:
+    runtime-versions:
+      nodejs: 18
+    commands:
+      - npm install -g typescript
+  pre_build:
+    commands:
+      - echo Installing source NPM dependencies...
+      - npm install
+  build:
+    commands:
+      - echo Build started on `date`
+      - npm test
+      - npm run build
+      - npm prune --production
+      - |
+        cat <<EOFF > ./scripts/initialize_app_env.sh
+        #!/bin/bash
+        SERVER_ID=\$(ec2metadata --instance-id)
+        cat > /var/www/env.conf <<- EOF
+        ${APP_ENV}
+        SERVER_ID=\$SERVER_ID
+        EOF
+        EOFF
+  post_build:
+    commands:
+      - echo Build completed on `date`
+reports:
+  jest_reports:
+    files:
+      - test-results.xml
+    file-format: JUNITXML
+artifacts:
+  files:
+    - dist/**/*
+    - appspec.yml
+    - node_modules/**/*
+    - scripts/**/*
