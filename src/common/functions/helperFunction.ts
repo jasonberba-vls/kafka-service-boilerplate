@@ -46,12 +46,16 @@ function getHostHeader(req: Request) {
 }
 
 function parseHeaders(headers: any): Record<string, string | undefined> {
-  return Object.fromEntries(
-    Object.entries(headers).map(([key, value]) => [
-      key,
-      value ? value.toString() : undefined,
-    ])
-  );
+  if (headers) {
+    return Object.fromEntries(
+      Object.entries(headers).map(([key, value]) => [
+        key,
+        value ? value.toString() : undefined,
+      ])
+    );
+  }
+  else
+    return null;
 }
 
 export {
