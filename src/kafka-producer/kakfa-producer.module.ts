@@ -33,7 +33,7 @@ import { Partitioners } from 'kafkajs';
             // enforceRequestTimeout: false // Disable requestTimeOut
           },
           producer: {
-            createPartitioner: Partitioners.LegacyPartitioner
+            createPartitioner: Partitioners.DefaultPartitioner
           }
         },
       },
