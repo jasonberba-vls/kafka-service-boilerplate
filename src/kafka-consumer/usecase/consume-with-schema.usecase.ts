@@ -95,7 +95,8 @@ constructor(private schemaService: SchemaService,
         timestamp: new Date(Number(message.timestamp)).toString(),
         key: message.key?.toString(),
         headers: message.headers?.toString(),
-        value: messageValue
+        value: messageValue // View as Avro Datatype
+        // value: messageValue.toString() // View as String
     };
     console.log(`Topic ${topic} : `, eventMessageParsed);
 
