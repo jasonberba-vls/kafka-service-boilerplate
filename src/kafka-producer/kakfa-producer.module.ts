@@ -7,6 +7,7 @@ import { InternalApiWrapper } from '../common/wrapper/internalApiWrapper';
 import PublishWithSchemaUseCase from './usecase/publish-with-schema.usecase';
 import { SchemaService } from '../common/services/schema/schema.service';
 import { Partitioners } from 'kafkajs';
+import { merchantPartitioner } from './partitioner/merchant-partitioner';
 
 @Module({
   imports: [
@@ -33,7 +34,8 @@ import { Partitioners } from 'kafkajs';
             // enforceRequestTimeout: false // Disable requestTimeOut
           },
           producer: {
-            createPartitioner: Partitioners.DefaultPartitioner
+            // createPartitioner: Partitioners.DefaultPartitioner
+            createPartitioner : () => merchantPartitioner as any
           }
         },
       },
