@@ -4,6 +4,7 @@ import 'dotenv/config';
 import ConsumeUseCase from './usecase/consume.usecase';
 import ConsumeWithSchemaUseCase from './usecase/consume-with-schema.usecase';
 import { KafkaGroup, KafkaConsumerLog, KafkaSteps } from '../common/types/kafka-log';
+import { CustomPartitionAssigner } from './partitioner/partition-assigner';
 
 @Injectable()
 export class KafkaConsumer implements OnModuleInit, OnModuleDestroy {
@@ -15,6 +16,7 @@ export class KafkaConsumer implements OnModuleInit, OnModuleDestroy {
       private consumeWithSchemaUseCase : ConsumeWithSchemaUseCase
   ) {
     this.kafka = new Kafka({
+      clientId: 'my-app-1', // Define for Custom Partitioner
       brokers: [process.env.KAFKA_BROKER], // Kafka broker address
 
       // AUTHENTICATION
@@ -26,7 +28,9 @@ export class KafkaConsumer implements OnModuleInit, OnModuleDestroy {
         password: process.env.KAFKA_CONSUMER_PASSWORD
       },
     });
-    this.consumer = this.kafka.consumer({ groupId: process.env.KAFKA_CONSUMER_GROUP });
+    //this.consumer = this.kafka.consumer({ groupId: process.env.KAFKA_CONSUMER_GROUP });
+    //Custom Partitioner
+    this.consumer = this.kafka.consumer({ groupId: process.env.KAFKA_CONSUMER_GROUP, partitionAssigners: [CustomPartitionAssigner('test_topic_001', 'my-app-')] });
   }
 
   async onModuleInit() {
